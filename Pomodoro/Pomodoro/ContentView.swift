@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     var progress: Double
-    @State private var isPlaying: Bool = false
+    @State var isPlaying: Bool = false
     @State private var selectedTab = 1
     
     init(progress: Double) {
@@ -18,133 +18,128 @@ struct ContentView: View {
     }
     
     var body: some View {
-        
         TabView {
-            
             ZStack {
                 Image("BG")
                     .padding(.top, 36)
                 
                 VStack(spacing: 53) {
-                    HStack {
-                        Image("Pencil")
-                        
-                        Text("Focus Category")
-                            .foregroundColor(.white)
-                            .fontWeight(.semibold)
-                    }
-                    .frame(width: 170, height: 36)
-                    .background(Color(red: 1.0, green: 1.0, blue: 1.0, opacity: 0.3))
-                    .cornerRadius(20)
-                    //                    .padding(.top, 164)
+                    focusCategory
+                
+                    Clock(progress: progress, time: "25:00")
                     
-                    ZStack {
-                        Circle()
-                            .strokeBorder(Color.white.opacity(0.3), lineWidth: 6)
-                            .frame(width: 248, height: 248)
-                        
-                        Circle()
-                            .trim(from: 0.0, to: CGFloat(min(self.progress, 1.0)))
-                            .stroke(style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
-                            .foregroundColor(.white)
-                            .rotationEffect(Angle(degrees: -90))
-                            .frame(width: 243, height: 243)
-                        
-                        VStack {
-                            Text("25:00")
-                                .font(.system(size: 44))
-                                .foregroundColor(.white)
-                                .fontWeight(.bold)
-                            Text("Focus on your task")
-                                .foregroundColor(.white)
-                                .fontWeight(.semibold)
-                        }
-                    }
+                    Buttons(isPlaying: isPlaying)
                     
-                    HStack(spacing: 80) {
-                        Button(action: {
-                            self.isPlaying.toggle()
-                        }) {
-                            ZStack {
-                                Circle()
-                                    .fill(.white.opacity(0.3))
-                                
-                                Image(isPlaying ? "play1" : "Union")
-                            }
-                        }
-                        .frame(width: 56, height: 56)
-                        
-                        Button(action: {}) {
-                            ZStack {
-                                Circle()
-                                    .fill(.white.opacity(0.3))
-                                Image("Square")
-                            }
-                        }
-                        .frame(width: 56, height: 56)
-                    }
                     Spacer()
                 }
                 .padding(.top, 164)
             }
             .tabItem({
-                VStack {
-                    ZStack {
-                        Circle()
-                            .fill(.white)
-                            .frame(width: 30, height: 30)
-                        Image("homeHeart")
-                            .frame(width: 17, height: 17)
-                    }
-                    Text("Main")
-                        .font(.system(size: 10))
-                }
+                tabElement(imageName: "homeHeart", text: "Main")
             })
             
             SettingsVew()
                 .tabItem({
-                    VStack {
-                        ZStack {
-                            Circle()
-                                .fill(.white)
-                                .frame(width: 30, height: 30)
-                            Image("Settings")
-                                .frame(width: 17, height: 17)
-                        }
-                        Text("Settings")
-                            .font(.system(size: 10))
-                    }
+                  tabElement(imageName: "Settings", text: "Settings")
                 })
             
             historyView()
                 .tabItem({
-                    VStack {
-                        ZStack {
-                            Image(systemName: "circle")
-                                .foregroundColor(.black)
-                                .opacity(1)
-                            Image("Group1")
-                                .frame(width: 17, height: 17)
-                        }
-                        Text("History")
-                            .font(.system(size: 10))
-                    }
-//                    Image(systemName: "circle")
-//                        .renderingMode(.template)
-//                        .imageScale(.large)
-//                    Text("History")
-//                        .background(Color.clear)
+                  tabElement(imageName: "file", text: "History")
                 })
-//                .background(Color.white)
-            
-            //            .edgesIgnoringSafeArea(.all)
         }
         .tint(.white)
+    }
+    
+    var focusCategory: some View {
+        Button(action: {}) {
+            HStack {
+                Image("Pencil")
+                Text("Focus Category")
+                    .foregroundColor(.white)
+                    .fontWeight(.semibold)
+            }
+            .frame(width: 170, height: 36)
+            .background(Color(red: 1.0, green: 1.0, blue: 1.0, opacity: 0.3))
+            .cornerRadius(20)
+        }
+    }
+}
+
+struct tabElement: View {
+    var imageName: String
+    var text: String
+    
+    var body: some View {
+        VStack {
+            ZStack {
+                Image(imageName)
+            }
+            Text(text)
+                .font(.system(size: 10))
+        }
+    }
+}
+
+struct Clock: View {
+    var progress: Double
+    var time: String
+    var body: some View {
+        ZStack {
+            Circle()
+                .strokeBorder(Color.white.opacity(0.3), lineWidth: 6)
+                .frame(width: 248, height: 248)
+            
+            Circle()
+                .trim(from: 0.0, to: CGFloat(min(self.progress, 1.0)))
+                .stroke(style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
+                .foregroundColor(.white)
+                .rotationEffect(Angle(degrees: -90))
+                .frame(width: 243, height: 243)
+            
+            VStack {
+                Text(time)
+                    .font(.system(size: 44))
+                    .foregroundColor(.white)
+                    .fontWeight(.bold)
+                Text("Focus on your task")
+                    .foregroundColor(.white)
+                    .fontWeight(.semibold)
+            }
+        }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView(progress: 0.3)
+    }
+}
+
+struct Buttons: View {
+    @State var isPlaying: Bool
+    var body: some View {
+        HStack(spacing: 80) {
+            playOrStop(imageName: isPlaying ? "play" : "pause") {
+                isPlaying.toggle()
+            }
+            playOrStop(imageName: "stop")
+        }
+    }
+}
+
+struct playOrStop: View {
+    var imageName: String
+    var act: () -> () = {}
+    var body: some View {
+        Button(action: act) {
+            ZStack {
+                Circle()
+                    .fill(.white.opacity(0.3))
+                Image(systemName: imageName)
+                    .font(.system(size: 25))
+            }
+        }
+        .frame(width: 56, height: 56)
     }
 }
