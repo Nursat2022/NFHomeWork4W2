@@ -24,7 +24,7 @@ struct ContentView: View {
                     .padding(.top, 36)
                 
                 VStack(spacing: 53) {
-                    focusCategory
+                    focusCategory()
                 
                     Clock(progress: progress, time: "25:00")
                     
@@ -50,11 +50,17 @@ struct ContentView: View {
         }
         .tint(.white)
     }
-    
-    var focusCategory: some View {
+}
+
+struct focusCategory: View {
+    var body: some View {
         Button(action: {}) {
             HStack {
-                Image("Pencil")
+                //                Image("Pencil")
+                Image(systemName: "pencil")
+                    .fontWeight(.bold)
+                    .font(.system(size: 20))
+                
                 Text("Focus Category")
                     .foregroundColor(.white)
                     .fontWeight(.semibold)
@@ -62,6 +68,18 @@ struct ContentView: View {
             .frame(width: 170, height: 36)
             .background(Color(red: 1.0, green: 1.0, blue: 1.0, opacity: 0.3))
             .cornerRadius(20)
+        }
+    }
+}
+
+struct Buttons: View {
+    @State var isPlaying: Bool
+    var body: some View {
+        HStack(spacing: 80) {
+            playOrStop(imageName: isPlaying ? "play" : "pause") {
+                isPlaying.toggle()
+            }
+            playOrStop(imageName: "stop")
         }
     }
 }
@@ -116,18 +134,6 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
-struct Buttons: View {
-    @State var isPlaying: Bool
-    var body: some View {
-        HStack(spacing: 80) {
-            playOrStop(imageName: isPlaying ? "play" : "pause") {
-                isPlaying.toggle()
-            }
-            playOrStop(imageName: "stop")
-        }
-    }
-}
-
 struct playOrStop: View {
     var imageName: String
     var act: () -> () = {}
@@ -138,6 +144,7 @@ struct playOrStop: View {
                     .fill(.white.opacity(0.3))
                 Image(systemName: imageName)
                     .font(.system(size: 25))
+                    .fontWeight(.bold)
             }
         }
         .frame(width: 56, height: 56)
