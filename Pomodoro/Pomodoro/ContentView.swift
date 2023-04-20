@@ -11,6 +11,7 @@ struct ContentView: View {
     var progress: Double
     @State var isPlaying: Bool = false
     @State private var selectedTab = 1
+    @State private var showActionSheet = false
     
     init(progress: Double) {
         self.progress = progress
@@ -19,21 +20,28 @@ struct ContentView: View {
     
     var body: some View {
         TabView {
-            ZStack {
+            ZStack(alignment: .bottom) {
                 Image("BG")
                     .padding(.top, 36)
                 
                 VStack(spacing: 53) {
-                    focusCategory()
+                    focusCategory {
+                        showActionSheet = true
+                    }
                 
                     Clock(progress: progress, time: "25:00")
                     
                     Buttons(isPlaying: isPlaying)
-                    
                     Spacer()
                 }
                 .padding(.top, 164)
+                
+                ActionSheet {
+                    showActionSheet = false
+                }
+                    .offset(y: showActionSheet ? 0 : UIScreen.main.bounds.height)
             }
+            .animation(.spring(), value: showActionSheet)
             .tabItem({
                 tabElement(imageName: "homeHeart", text: "Main")
             })
@@ -53,10 +61,10 @@ struct ContentView: View {
 }
 
 struct focusCategory: View {
+    var action: () -> ()
     var body: some View {
-        Button(action: {}) {
+        Button(action: action) {
             HStack {
-                //                Image("Pencil")
                 Image(systemName: "pencil")
                     .fontWeight(.bold)
                     .font(.system(size: 20))
@@ -79,7 +87,7 @@ struct Buttons: View {
             playOrStop(imageName: isPlaying ? "play" : "pause") {
                 isPlaying.toggle()
             }
-            playOrStop(imageName: "stop")
+            playOrStop(imageName: "stop.fill")
         }
     }
 }

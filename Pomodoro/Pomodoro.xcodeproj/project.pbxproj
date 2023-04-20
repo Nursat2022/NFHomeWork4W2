@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		C84CB47129DEFE2100158DF3 /* actionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = C84CB47029DEFE2100158DF3 /* actionSheet.swift */; };
 		C84CB47329DF112300158DF3 /* SettingsVew.swift in Sources */ = {isa = PBXBuildFile; fileRef = C84CB47229DF112300158DF3 /* SettingsVew.swift */; };
+		C873F18F29E132A1006A03B7 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = C873F18E29E132A1006A03B7 /* Test.swift */; };
 		C89FF3E029DF29F2004E8EB6 /* historyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C89FF3DF29DF29F2004E8EB6 /* historyView.swift */; };
 		C8D7D69129DE8D57000707CE /* PomodoroApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D7D69029DE8D57000707CE /* PomodoroApp.swift */; };
 		C8D7D69329DE8D57000707CE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D7D69229DE8D57000707CE /* ContentView.swift */; };
@@ -19,6 +20,7 @@
 /* Begin PBXFileReference section */
 		C84CB47029DEFE2100158DF3 /* actionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = actionSheet.swift; sourceTree = "<group>"; };
 		C84CB47229DF112300158DF3 /* SettingsVew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsVew.swift; sourceTree = "<group>"; };
+		C873F18E29E132A1006A03B7 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		C89FF3DF29DF29F2004E8EB6 /* historyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = historyView.swift; sourceTree = "<group>"; };
 		C8D7D68D29DE8D57000707CE /* Pomodoro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pomodoro.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8D7D69029DE8D57000707CE /* PomodoroApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroApp.swift; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 				C84CB47029DEFE2100158DF3 /* actionSheet.swift */,
 				C84CB47229DF112300158DF3 /* SettingsVew.swift */,
 				C89FF3DF29DF29F2004E8EB6 /* historyView.swift */,
+				C873F18E29E132A1006A03B7 /* Test.swift */,
 			);
 			path = Pomodoro;
 			sourceTree = "<group>";
@@ -151,6 +154,7 @@
 				C84CB47129DEFE2100158DF3 /* actionSheet.swift in Sources */,
 				C84CB47329DF112300158DF3 /* SettingsVew.swift in Sources */,
 				C89FF3E029DF29F2004E8EB6 /* historyView.swift in Sources */,
+				C873F18F29E132A1006A03B7 /* Test.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
