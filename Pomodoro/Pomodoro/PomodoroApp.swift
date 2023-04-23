@@ -11,7 +11,7 @@ import SwiftUI
 struct PomodoroApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView(progress: 0.5)
+            ContentView(progress: 0.0)
         }
     }
 }

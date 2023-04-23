@@ -39,31 +39,12 @@ struct dates: View {
                 .fontWeight(.bold)
             Spacer()
         }.frame(width: 358, height: 26)) {
-            timeRow(time: focusTime, mode: "FocusTime")
-            timeRow(time: breakTime, mode: "BreakTime")
+//            timeRow(time: focusTime, mode: "FocusTime")
+//            timeRow(time: breakTime, mode: "BreakTime")
         }
     }
 }
 
-struct timeRow: View {
-    var time: String
-    var mode: String
-    
-    var body: some View {
-        HStack {
-            Text(mode)
-            Spacer()
-            TextField("", text: .constant(time))
-                .multilineTextAlignment(.center)
-                .foregroundColor(Color(red: 235/255, green: 235/255, blue: 245/255, opacity: 0.6))
-                .fixedSize()
-        }
-        .padding(16)
-        
-        Divider()
-            .background(Color(red: 56/255, green: 56/255, blue: 58/255))
-    }
-}
 
 struct historyView_Previews: PreviewProvider {
     static var previews: some View {

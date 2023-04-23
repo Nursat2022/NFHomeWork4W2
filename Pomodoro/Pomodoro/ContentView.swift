@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct ContentView: View {
-    var progress: Double
+    @State var progress: Double
     @State var isPlaying: Bool = false
     @State private var selectedTab = 1
     @State private var showActionSheet = false
+    
     
     init(progress: Double) {
         self.progress = progress
@@ -28,10 +29,13 @@ struct ContentView: View {
                     focusCategory {
                         showActionSheet = true
                     }
+                    .onAppear {
+                        
+                    }
                 
                     Clock(progress: progress, time: "25:00")
                     
-                    Buttons(isPlaying: isPlaying)
+                    Buttons(isPlaying: $isPlaying)
                     Spacer()
                 }
                 .padding(.top, 164)
@@ -58,6 +62,12 @@ struct ContentView: View {
         }
         .tint(.white)
     }
+    
+    func updateTimer() {
+//        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+//            time = time.addingTimeInterval(1)
+//        }
+    }
 }
 
 struct focusCategory: View {
@@ -81,7 +91,7 @@ struct focusCategory: View {
 }
 
 struct Buttons: View {
-    @State var isPlaying: Bool
+    @Binding var isPlaying: Bool
     var body: some View {
         HStack(spacing: 80) {
             playOrStop(imageName: isPlaying ? "play" : "pause") {
@@ -138,7 +148,7 @@ struct Clock: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(progress: 0.3)
+        ContentView(progress: 0.0)
     }
 }
 

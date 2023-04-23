@@ -7,22 +7,53 @@
 
 import SwiftUI
 
+class SettingsData: ObservableObject {
+    @Published var FocusTime: Date = UserDefaults.standard.object(forKey: "FocusTime") as? Date ?? Date() {
+        didSet {
+            UserDefaults.standard.set(self.FocusTime, forKey: "FocusTime")
+        }
+    }
+    
+    @Published var BreakTime: Date = UserDefaults.standard.object(forKey: "BreakTime") as? Date ?? Date() {
+        didSet {
+            UserDefaults.standard.set(self.BreakTime, forKey: "BreakTime")
+        }
+    }
+}
+
 struct SettingsVew: View {
-    var focusTime = "25:00"
-    var breakTime = "05:00"
+    @ObservedObject var settingsTime = SettingsData()
     var body: some View {
         VStack {
             Text("Settings")
                 .fontWeight(.bold)
                 .padding(.bottom, 26)
             
-            timeRow(time: focusTime, mode: "FocusTime")
-            timeRow(time: breakTime, mode: "BreakTime")
+            timeRow(time: $settingsTime.FocusTime, mode: "FocusTime")
+            timeRow(time: $settingsTime.BreakTime, mode: "BreakTime")
             
             Spacer()
         }
         .foregroundColor(.white)
         .background(Color(red: 28/255, green: 28/255, blue: 30/255, opacity: 1))
+    }
+}
+
+struct timeRow: View {
+    @Binding var time: Date
+    var mode: String
+    
+    var body: some View {
+        HStack {
+            DatePicker(selection: $time, displayedComponents: .hourAndMinute) {
+                Text(mode)
+            }
+            .environment(\.locale, Locale(identifier: "ru_RU"))
+        }
+        .padding(16)
+        
+        Divider()
+            .background(Color(red: 56/255, green: 56/255, blue: 58/255))
     }
 }
 
