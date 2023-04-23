@@ -29,9 +29,6 @@ struct ContentView: View {
                     focusCategory {
                         showActionSheet = true
                     }
-                    .onAppear {
-                        
-                    }
                 
                     Clock(progress: progress, time: settingsTime)
                     
@@ -44,6 +41,9 @@ struct ContentView: View {
                     showActionSheet = false
                 }
                     .offset(y: showActionSheet ? 0 : UIScreen.main.bounds.height)
+            }
+            .onAppear {
+                updateTimer()
             }
             .animation(.spring(), value: showActionSheet)
             .tabItem({
@@ -64,9 +64,9 @@ struct ContentView: View {
     }
     
     func updateTimer() {
-//        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-//            time = time.addingTimeInterval(1)
-//        }
+        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+            settingsTime.FocusTime = settingsTime.FocusTime.addingTimeInterval(-1)
+        }
     }
 }
 
