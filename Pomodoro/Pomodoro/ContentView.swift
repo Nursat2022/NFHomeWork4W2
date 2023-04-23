@@ -9,14 +9,12 @@ import SwiftUI
 
 struct ContentView: View {
     @State var timer: Timer?
-    @State var progress: Double
     @State var isPlaying: Bool = false
     @State private var selectedTab = 1
     @State private var showActionSheet = false
     @StateObject var settingsTime = SettingsData()
     
     init(progress: Double) {
-        self.progress = progress
         UITabBar.appearance().unselectedItemTintColor = .white
     }
     
@@ -31,7 +29,7 @@ struct ContentView: View {
                         showActionSheet = true
                     }
                 
-                    Clock(progress: progress, time: settingsTime)
+                    Clock(time: settingsTime)
                     
                     Buttons(isPlaying: $isPlaying)
                     Spacer()
@@ -158,7 +156,6 @@ struct tabElement: View {
 }
 
 struct Clock: View {
-    var progress: Double
     @ObservedObject var time: SettingsData
     var body: some View {
         ZStack {
@@ -167,7 +164,7 @@ struct Clock: View {
                 .frame(width: 248, height: 248)
             
             Circle()
-                .trim(from: 0.0, to: CGFloat(min(self.progress, 1.0)))
+                .trim(from: 0.0, to: CGFloat(min(calculatePercentage(bigDate: time.FocusTime, smallDate: time.BreakTime), 1.0)))
                 .stroke(style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
                 .foregroundColor(.white)
                 .rotationEffect(Angle(degrees: -90))
