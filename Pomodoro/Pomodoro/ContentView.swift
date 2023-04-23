@@ -12,7 +12,7 @@ struct ContentView: View {
     @State var isPlaying: Bool = false
     @State private var selectedTab = 1
     @State private var showActionSheet = false
-    
+    @StateObject var settingsTime = SettingsData()
     
     init(progress: Double) {
         self.progress = progress
@@ -33,7 +33,7 @@ struct ContentView: View {
                         
                     }
                 
-                    Clock(progress: progress, time: "25:00")
+                    Clock(progress: progress, time: settingsTime)
                     
                     Buttons(isPlaying: $isPlaying)
                     Spacer()
@@ -50,7 +50,7 @@ struct ContentView: View {
                 tabElement(imageName: "homeHeart", text: "Main")
             })
             
-            SettingsVew()
+            SettingsVew(settingsTime: settingsTime)
                 .tabItem({
                   tabElement(imageName: "Settings", text: "Settings")
                 })
@@ -67,6 +67,25 @@ struct ContentView: View {
 //        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
 //            time = time.addingTimeInterval(1)
 //        }
+    }
+}
+
+func dateToString(date: Date) -> String {
+    let calendar = Calendar.current
+    let hour = calendar.component(.hour, from: date)
+    let minutes = calendar.component(.minute, from: date)
+    let seconds = calendar.component(.second, from: date)
+    let formatter = DateFormatter()
+    formatter.dateFormat = hour == 0 ? "mm:ss" : "HH:mm:ss"
+    let stringFormat = formatter.string(from: date)
+    return stringFormat
+}
+
+struct getDate: View {
+    @ObservedObject var date: SettingsData
+    var body: some View {
+        var stringFormat = dateToString(date: date.FocusTime)
+        return Text("\(stringFormat)")
     }
 }
 
@@ -119,7 +138,7 @@ struct tabElement: View {
 
 struct Clock: View {
     var progress: Double
-    var time: String
+    @ObservedObject var time: SettingsData
     var body: some View {
         ZStack {
             Circle()
@@ -134,7 +153,7 @@ struct Clock: View {
                 .frame(width: 243, height: 243)
             
             VStack {
-                Text(time)
+                getDate(date: time)
                     .font(.system(size: 44))
                     .foregroundColor(.white)
                     .fontWeight(.bold)

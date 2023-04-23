@@ -22,7 +22,7 @@ class SettingsData: ObservableObject {
 }
 
 struct SettingsVew: View {
-    @ObservedObject var settingsTime = SettingsData()
+    @ObservedObject var settingsTime: SettingsData
     var body: some View {
         VStack {
             Text("Settings")
@@ -57,8 +57,8 @@ struct timeRow: View {
     }
 }
 
-struct SettingsVew_Previews: PreviewProvider {
-    static var previews: some View {
-        SettingsVew()
-    }
-}
+//struct SettingsVew_Previews: PreviewProvider {
+//    static var previews: some View {
+//        SettingsVew()
+//    }
+//}
