@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var timer: Timer?
     @State var progress: Double
     @State var isPlaying: Bool = false
     @State private var selectedTab = 1
@@ -43,8 +44,11 @@ struct ContentView: View {
                     .offset(y: showActionSheet ? 0 : UIScreen.main.bounds.height)
             }
             .onAppear {
-                updateTimer()
+                isPlaying ? updateTimer() : stopTimer()
             }
+            .onChange(of: isPlaying, perform: { newValue in
+                isPlaying ? updateTimer() : stopTimer()
+            })
             .animation(.spring(), value: showActionSheet)
             .tabItem({
                 tabElement(imageName: "homeHeart", text: "Main")
@@ -64,9 +68,12 @@ struct ContentView: View {
     }
     
     func updateTimer() {
-        Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             settingsTime.FocusTime = settingsTime.FocusTime.addingTimeInterval(-1)
         }
+    }
+    func stopTimer() {
+        timer?.invalidate()
     }
 }
 
@@ -113,12 +120,26 @@ struct Buttons: View {
     @Binding var isPlaying: Bool
     var body: some View {
         HStack(spacing: 80) {
-            playOrStop(imageName: isPlaying ? "play" : "pause") {
+            playOrStop(imageName: isPlaying ? "pause" : "play") {
                 isPlaying.toggle()
             }
             playOrStop(imageName: "stop.fill")
         }
     }
+}
+
+extension Date {
+    func getSeconds() -> Int {
+        let calendar = Calendar.current
+        let hour = calendar.component(.hour, from: self)
+        let minutes = calendar.component(.minute, from: self)
+        let seconds = calendar.component(.second, from: self)
+        return hour * 3600 + minutes * 60 + seconds
+    }
+}
+
+func calculatePercentage(bigDate: Date, smallDate: Date) -> Float {
+    return Float(smallDate.getSeconds()) / Float(bigDate.getSeconds())
 }
 
 struct tabElement: View {
