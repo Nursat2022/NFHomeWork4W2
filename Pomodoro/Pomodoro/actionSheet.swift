@@ -19,7 +19,7 @@ struct actionSheet: View {
 }
 
 struct ActionSheet: View {
-    @Binding var backgroundImage: backgroundMode
+    @EnvironmentObject var Items: PomodoroItems
     @State private var selected = "Work"
     var cancelAction: () -> ()
     
@@ -53,22 +53,22 @@ struct ActionSheet: View {
                     VStack(spacing: 20) {
 
                         HStack(spacing: 14) {
-                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Work")
+                            sheetButton(isSelected: $selected, text: "Work")
 
-                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Study")
+                            sheetButton(isSelected: $selected, text: "Study")
                         }
 
                         HStack(spacing: 14) {
-                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Workout")
+                            sheetButton(isSelected: $selected, text: "Workout")
 
-                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Reading")
+                            sheetButton(isSelected: $selected, text: "Reading")
                         }
 
                         HStack(spacing: 14) {
-                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Meditation")
+                            sheetButton(isSelected: $selected, text: "Meditation")
 
 
-                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Others")
+                            sheetButton(isSelected: $selected, text: "Others")
                         }
                     }
                 }
@@ -96,7 +96,7 @@ struct ActionSheet: View {
 
 struct sheetButton: View {
     @Binding var isSelected: String
-    @Binding var backgroundImage: backgroundMode
+    @EnvironmentObject var Items: PomodoroItems
     var text: String
 //    @State var backgroundColor: Color
 //    var textColor: Color = .black
@@ -105,16 +105,16 @@ struct sheetButton: View {
         Button(action: {
             isSelected = text
             switch text {
-            case "Work": backgroundImage = .Work
-            case "Workout": backgroundImage = .Workout
-            case "Reading": backgroundImage = .Reading
-            case "Meditation": backgroundImage = .Meditation
-            case "Study": backgroundImage = .Study
-            case "Others": backgroundImage = .Others
+            case "Work": Items.backgroundImage = .Work
+            case "Workout": Items.backgroundImage = .Workout
+            case "Reading": Items.backgroundImage = .Reading
+            case "Meditation": Items.backgroundImage = .Meditation
+            case "Study": Items.backgroundImage = .Study
+            case "Others": Items.backgroundImage = .Others
             default:
                 break
             }
-            UserDefaults.standard.setValue(backgroundImage.rawValue, forKey: "BackgroundImage")
+            UserDefaults.standard.setValue(Items.backgroundImage.rawValue, forKey: "BackgroundImage")
         }) {
             Text(text)
                 .foregroundColor(isSelected == text ? .white : .black)
