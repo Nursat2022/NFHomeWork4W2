@@ -14,6 +14,12 @@ class SettingsData: ObservableObject {
         }
     }
     
+    @Published var currentTime: Date = UserDefaults.standard.object(forKey: "FocusTime") as? Date ?? Date() {
+        didSet {
+            UserDefaults.standard.set(self.FocusTime, forKey: "FocusTime")
+        }
+    }
+    
     @Published var BreakTime: Date = UserDefaults.standard.object(forKey: "BreakTime") as? Date ?? Date() {
         didSet {
             UserDefaults.standard.set(self.BreakTime, forKey: "BreakTime")
@@ -33,6 +39,9 @@ struct SettingsVew: View {
             timeRow(time: $settingsTime.BreakTime, mode: "BreakTime")
             
             Spacer()
+        }
+        .onDisappear {
+            settingsTime.currentTime = settingsTime.FocusTime
         }
         .foregroundColor(.white)
         .background(Color(red: 28/255, green: 28/255, blue: 30/255, opacity: 1))

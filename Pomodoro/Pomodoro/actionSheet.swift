@@ -11,7 +11,7 @@ struct actionSheet: View {
     var progress: Double
     @State private var selectedTab = 1
     @State private var isPlaying = false
-    
+    @State var isSelected = ""
     var body: some View {
 //        ActionSheet()
         Text("hello")
@@ -19,24 +19,25 @@ struct actionSheet: View {
 }
 
 struct ActionSheet: View {
-    @State private var selected = "Workout"
+    @Binding var backgroundImage: backgroundMode
+    @State private var selected = "Work"
     var cancelAction: () -> ()
     
-    var buttons: [sheetButton] = [
-        sheetButton(text: "Work", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255)),
-
-          sheetButton(text: "Study", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255)),
-        
-        sheetButton(text: "Wokout", backgroundColor: Color(red: 47/255, green: 47/255, blue: 51/255), textColor: .white),
-
-        sheetButton(text: "Reading", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255)),
-        
-        sheetButton(text: "Meditation", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255)),
-
-
-        sheetButton(text: "Others", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255))
-        
-    ]
+//    var buttons: [sheetButton] = [
+//        sheetButton(text: "Work", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255)),
+//
+//          sheetButton(text: "Study", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255)),
+//
+//        sheetButton(text: "Wokout", backgroundColor: Color(red: 47/255, green: 47/255, blue: 51/255), textColor: .white),
+//
+//        sheetButton(text: "Reading", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255)),
+//
+//        sheetButton(text: "Meditation", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255)),
+//
+//
+//        sheetButton(text: "Others", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255))
+//
+//    ]
     
     var body: some View {
        VStack {
@@ -52,22 +53,22 @@ struct ActionSheet: View {
                     VStack(spacing: 20) {
 
                         HStack(spacing: 14) {
-                          sheetButton(text: "Work", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255))
+                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Work")
 
-                            sheetButton(text: "Study", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255))
+                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Study")
                         }
 
                         HStack(spacing: 14) {
-                            sheetButton(text: "Wokout", backgroundColor: Color(red: 47/255, green: 47/255, blue: 51/255), textColor: .white)
+                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Workout")
 
-                            sheetButton(text: "Reading", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255))
+                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Reading")
                         }
 
                         HStack(spacing: 14) {
-                            sheetButton(text: "Meditation", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255))
+                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Meditation")
 
 
-                            sheetButton(text: "Others", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255))
+                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Others")
                         }
                     }
                 }
@@ -94,18 +95,33 @@ struct ActionSheet: View {
 }
 
 struct sheetButton: View {
+    @Binding var isSelected: String
+    @Binding var backgroundImage: backgroundMode
     var text: String
-    var backgroundColor: Color
-    var textColor: Color = .black
+//    @State var backgroundColor: Color
+//    var textColor: Color = .black
 
     var body: some View {
-        Button(action: {}) {
+        Button(action: {
+            isSelected = text
+            switch text {
+            case "Work": backgroundImage = .Work
+            case "Workout": backgroundImage = .Workout
+            case "Reading": backgroundImage = .Reading
+            case "Meditation": backgroundImage = .Meditation
+            case "Study": backgroundImage = .Study
+            case "Others": backgroundImage = .Others
+            default:
+                break
+            }
+            UserDefaults.standard.setValue(backgroundImage.rawValue, forKey: "BackgroundImage")
+        }) {
             Text(text)
-                .foregroundColor(textColor)
+                .foregroundColor(isSelected == text ? .white : .black)
                 .frame(width: 124, height: 28)
         }
         .frame(width: 170, height: 60)
-        .background(backgroundColor)
+        .background(isSelected == text ? Color(red: 47/255, green: 47/255, blue: 51/255) : Color(red: 234/255, green: 234/255, blue: 234/255))
         .cornerRadius(16)
         .fontWeight(.semibold)
     }
