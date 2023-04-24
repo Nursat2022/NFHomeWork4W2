@@ -32,8 +32,8 @@ struct ContentView: View {
     @StateObject var settingsTime = SettingsData()
     
     init(progress: Double) {
-        today = Date().getDay()
-//        today = "25.04.23"
+//        today = Date().getDay()
+        today = "25.04.23"
         UITabBar.appearance().unselectedItemTintColor = .white
         var arr: [String] = UserDefaults.standard.object(forKey: "days") as? [String] ?? []
         if !arr.contains(today) {
