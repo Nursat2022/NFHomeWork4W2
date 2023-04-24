@@ -32,8 +32,7 @@ struct ContentView: View {
     @StateObject var settingsTime = SettingsData()
     
     init(progress: Double) {
-//        today = Date().getDay()
-        today = "25.04.23"
+        today = Date().getDay()
         UITabBar.appearance().unselectedItemTintColor = .white
         var arr: [String] = UserDefaults.standard.object(forKey: "days") as? [String] ?? []
         if !arr.contains(today) {
@@ -90,9 +89,11 @@ struct ContentView: View {
                     }
                 }
             })
+            
             .onChange(of: isPlaying, perform: { _ in
                 isPlaying ? updateTimer() : stopTimer()
             })
+            
             .animation(.spring(), value: showActionSheet)
             .tabItem({
                 tabElement(imageName: "homeHeart", text: "Main")
@@ -171,8 +172,6 @@ struct Buttons: View {
             playOrStop(imageName: "stop.fill") {
                 var historyToday: [String: Int] = UserDefaults.standard.object(forKey: today) as? [String: Int] ?? ["Focus time": 0, "Break time": 0]
                 
-                var historyToday1: [String: Int] = UserDefaults.standard.object(forKey: "25.04.23") as? [String: Int] ?? ["Focus time": 0, "Break time": 0]
-                
                 switch timerMode {
                 case .Focus:
                     historyToday["Focus time"]! += settingsTime.FocusTime.getSeconds() - settingsTime.currentTime.getSeconds()
@@ -182,8 +181,6 @@ struct Buttons: View {
                     historyToday["Break time"]! += settingsTime.BreakTime.getSeconds() - settingsTime.currentTime.getSeconds()
                     settingsTime.currentTime = settingsTime.BreakTime
                 }
-                print("\(historyToday["Focus time"])", today)
-                print("second \(historyToday1["Focus time"])", today)
                 UserDefaults.standard.setValue(historyToday, forKey: today)
                 isPlaying = false
             }
