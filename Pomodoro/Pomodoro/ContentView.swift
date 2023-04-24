@@ -29,7 +29,7 @@ enum backgroundMode: String {
 }
 
 struct ContentView: View {
-    @StateObject var Items: PomodoroItems
+    @StateObject var Items = PomodoroItems()
     @State var timer: Timer?
     @State private var selectedTab = 1
     @State private var showActionSheet = false
