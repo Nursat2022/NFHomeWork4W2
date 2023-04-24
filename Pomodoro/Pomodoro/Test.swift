@@ -7,17 +7,27 @@
 
 import SwiftUI
 
+class historyDate {
+    var focusTime: Int = 0
+    var breakTime: Int = 0
+}
+
 struct Test: View {
+    var date = Date()
+    var data: historyDate = historyDate()
     var body: some View {
-        ZStack {
-            Color.red
-            Circle()
-                .fill(.black)
-                .frame(width: 30, height: 30)
-            Image("homeHeart")
-                .foregroundColor(.red)
+        VStack {
+            Text("\(date.getSeconds())")
+            Text("\(data.focusTime)")
         }
-        .ignoresSafeArea()
+    }
+    
+    func toStr() -> String {
+        let date: Date = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd.MM.YY"
+        return formatter.string(from: date)
+        data.focusTime += date.getSeconds()
     }
 }
 

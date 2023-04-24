@@ -22,6 +22,7 @@ enum backgroundMode: String {
 }
 
 struct ContentView: View {
+    var today: String
     @State var timerMode: mode = .Focus
     @State var backgroundImage: backgroundMode = backgroundMode(rawValue: (UserDefaults.standard.object(forKey: "BackgroundImage") as? String) ?? "BG")!
     @State var timer: Timer?
@@ -31,7 +32,14 @@ struct ContentView: View {
     @StateObject var settingsTime = SettingsData()
     
     init(progress: Double) {
+        today = Date().getDay()
+//        today = "25.04.23"
         UITabBar.appearance().unselectedItemTintColor = .white
+        var arr: [String] = UserDefaults.standard.object(forKey: "days") as? [String] ?? []
+        if !arr.contains(today) {
+            arr.append(today)
+        }
+        UserDefaults.standard.setValue(arr, forKey: "days")
     }
     
     var body: some View {
@@ -47,7 +55,7 @@ struct ContentView: View {
                 
                     Clock(timerMode: $timerMode, time: settingsTime)
                     
-                    Buttons(timerMode: $timerMode, settingsTime: settingsTime, isPlaying: $isPlaying)
+                    Buttons(today: today, timerMode: $timerMode, settingsTime: settingsTime, isPlaying: $isPlaying)
                     Spacer()
                 }
                 .padding(.top, 164)
@@ -67,11 +75,16 @@ struct ContentView: View {
             
             .onChange(of: settingsTime.currentTime, perform: { _ in
                 if settingsTime.currentTime.getSeconds() < 1 {
+                    var history = UserDefaults.standard.object(forKey: today) as? [String: Int] ?? ["Focus time": 0, "Break time": 0]
                     switch timerMode {
                     case .Focus:
+                        history["Focus time"]! += settingsTime.FocusTime.getSeconds()
+                        UserDefaults.standard.setValue(history, forKey: today)
                         settingsTime.currentTime = settingsTime.BreakTime
                         timerMode = .Break
                     case .Break:
+                        history["Break time"]! += settingsTime.FocusTime.getSeconds()
+                        UserDefaults.standard.setValue(history, forKey: today)
                         settingsTime.currentTime = settingsTime.FocusTime
                         timerMode = .Focus
                     }
@@ -90,7 +103,7 @@ struct ContentView: View {
                   tabElement(imageName: "Settings", text: "Settings")
                 })
             
-            historyView()
+            historyView(today: today)
                 .tabItem({
                   tabElement(imageName: "file", text: "History")
                 })
@@ -120,7 +133,7 @@ func dateToString(date: Date) -> String {
 struct getDate: View {
     @ObservedObject var date: SettingsData
     var body: some View {
-        var stringFormat = dateToString(date: date.currentTime)
+        let stringFormat = dateToString(date: date.currentTime)
         return Text("\(stringFormat)")
     }
 }
@@ -146,6 +159,7 @@ struct focusCategory: View {
 }
 
 struct Buttons: View {
+    var today: String
     @Binding var timerMode: mode
     @ObservedObject var settingsTime: SettingsData
     @Binding var isPlaying: Bool
@@ -155,13 +169,22 @@ struct Buttons: View {
                 isPlaying.toggle()
             }
             playOrStop(imageName: "stop.fill") {
+                var historyToday: [String: Int] = UserDefaults.standard.object(forKey: today) as? [String: Int] ?? ["Focus time": 0, "Break time": 0]
+                
+                var historyToday1: [String: Int] = UserDefaults.standard.object(forKey: "25.04.23") as? [String: Int] ?? ["Focus time": 0, "Break time": 0]
+                
                 switch timerMode {
                 case .Focus:
+                    historyToday["Focus time"]! += settingsTime.FocusTime.getSeconds() - settingsTime.currentTime.getSeconds()
                     settingsTime.currentTime = settingsTime.FocusTime
                 
                 case .Break:
+                    historyToday["Break time"]! += settingsTime.BreakTime.getSeconds() - settingsTime.currentTime.getSeconds()
                     settingsTime.currentTime = settingsTime.BreakTime
                 }
+                print("\(historyToday["Focus time"])", today)
+                print("second \(historyToday1["Focus time"])", today)
+                UserDefaults.standard.setValue(historyToday, forKey: today)
                 isPlaying = false
             }
         }
@@ -175,6 +198,22 @@ extension Date {
         let minutes = calendar.component(.minute, from: self)
         let seconds = calendar.component(.second, from: self)
         return hour * 3600 + minutes * 60 + seconds
+    }
+    
+    func getDay() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd.MM.YY"
+        return formatter.string(from: self)
+    }
+}
+
+extension Int {
+    func toDate() -> String {
+        let hours = self / 3600
+        let minutes = self / 60
+        let seconds = self % 60
+        return hours == 0 ? String(format: "%02d:%02d", minutes, seconds) :
+        String(format: "%02d:%02d:%02d", hours, minutes, seconds)
     }
 }
 
