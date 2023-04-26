@@ -10,7 +10,6 @@ import SwiftUI
 struct historyView: View {
     var today: String
     var days = UserDefaults.standard.object(forKey: "days") as? [String] ?? []
-//    var history: [String: Int] = ["Focus time": 0, "Break time": 0]
     var body: some View {
         VStack {
             Text("History")
@@ -38,9 +37,6 @@ struct historyView: View {
                                 .foregroundColor(Color(red: 235/255, green: 235/255, blue: 245/255, opacity: 0.6))
                         }
                     }
-//                    .onAppear {
-//                        history = (UserDefaults.standard.object(forKey: day) as? [String: Int] ?? ["Focus time": 0, "Break time": 0])
-//                    }
                     .listRowInsets(EdgeInsets(top: 21, leading: 16, bottom: 11, trailing: 16))
                     .listSectionSeparator(.hidden, edges: .top)
                     .headerProminence(.increased)
@@ -52,25 +48,6 @@ struct historyView: View {
         .background(Color(red: 28/255, green: 28/255, blue: 30/255, opacity: 1))
     }
 }
-
-struct dates: View {
-    var day: String
-    var focusTime: String
-    var breakTime: String
-    
-    var body: some View {
-        Section(header: HStack {
-            Text(day)
-                .font(.system(size: 23))
-                .fontWeight(.bold)
-            Spacer()
-        }.frame(width: 358, height: 26)) {
-//            timeRow(time: focusTime, mode: "FocusTime")
-//            timeRow(time: breakTime, mode: "BreakTime")
-        }
-    }
-}
-
 
 struct historyView_Previews: PreviewProvider {
     static var previews: some View {

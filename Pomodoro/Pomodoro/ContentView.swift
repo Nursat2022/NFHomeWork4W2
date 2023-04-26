@@ -12,13 +12,6 @@ enum mode {
     case Break
 }
 
-class PomodoroItems: ObservableObject {
-    var today: String = Date().getDay()
-    @Published var timerMode: mode = .Focus
-    @Published var backgroundImage: backgroundMode = backgroundMode(rawValue: (UserDefaults.standard.object(forKey: "BackgroundImage") as? String) ?? "BG")!
-    @Published var isPlaying: Bool = false
-}
-
 enum backgroundMode: String {
     case Work = "BG"
     case Study = "BG1"
@@ -29,17 +22,21 @@ enum backgroundMode: String {
 }
 
 struct ContentView: View {
-    @StateObject var Items = PomodoroItems()
+    var today: String
+    @State var timerMode: mode = .Focus
+    @State var backgroundImage: backgroundMode = backgroundMode(rawValue: (UserDefaults.standard.object(forKey: "BackgroundImage") as? String) ?? "BG")!
     @State var timer: Timer?
+    @State var isPlaying: Bool = false
     @State private var selectedTab = 1
     @State private var showActionSheet = false
     @StateObject var settingsTime = SettingsData()
     
     init(progress: Double) {
+        today = Date().getDay()
         UITabBar.appearance().unselectedItemTintColor = .white
         var arr: [String] = UserDefaults.standard.object(forKey: "days") as? [String] ?? []
-        if !arr.contains(Items.today) {
-            arr.append(Items.today)
+        if !arr.contains(today) {
+            arr.append(today)
         }
         UserDefaults.standard.setValue(arr, forKey: "days")
     }
@@ -47,31 +44,28 @@ struct ContentView: View {
     var body: some View {
         TabView {
             ZStack(alignment: .bottom) {
-                Image(Items.backgroundImage.rawValue)
+                Image(backgroundImage.rawValue)
                     .padding(.top, 36)
                 
                 VStack(spacing: 53) {
                     focusCategory {
                         showActionSheet = true
                     }
+                
+                    Clock(timerMode: $timerMode, time: settingsTime)
                     
-                    Clock(time: settingsTime)
-                        .environmentObject(Items)
-                    
-                    Buttons(settingsTime: settingsTime)
-                        .environmentObject(Items)
+                    Buttons(today: today, timerMode: $timerMode, settingsTime: settingsTime, isPlaying: $isPlaying)
                     Spacer()
                 }
                 .padding(.top, 164)
                 
-                ActionSheet() {
+                ActionSheet(backgroundImage: $backgroundImage) {
                     showActionSheet = false
                 }
-                .environmentObject(Items)
-                .offset(y: showActionSheet ? 0 : UIScreen.main.bounds.height)
+                    .offset(y: showActionSheet ? 0 : UIScreen.main.bounds.height)
             }
             .onAppear {
-                Items.isPlaying ? updateTimer() : stopTimer()
+                isPlaying ? updateTimer() : stopTimer()
             }
             
             .onDisappear {
@@ -80,24 +74,24 @@ struct ContentView: View {
             
             .onChange(of: settingsTime.currentTime, perform: { _ in
                 if settingsTime.currentTime.getSeconds() < 1 {
-                    var history = UserDefaults.standard.object(forKey: Items.today) as? [String: Int] ?? ["Focus time": 0, "Break time": 0]
-                    switch Items.timerMode {
+                    var history = UserDefaults.standard.object(forKey: today) as? [String: Int] ?? ["Focus time": 0, "Break time": 0]
+                    switch timerMode {
                     case .Focus:
                         history["Focus time"]! += settingsTime.FocusTime.getSeconds()
-                        UserDefaults.standard.setValue(history, forKey: Items.today)
+                        UserDefaults.standard.setValue(history, forKey: today)
                         settingsTime.currentTime = settingsTime.BreakTime
-                        Items.timerMode = .Break
+                        timerMode = .Break
                     case .Break:
                         history["Break time"]! += settingsTime.FocusTime.getSeconds()
-                        UserDefaults.standard.setValue(history, forKey: Items.today)
+                        UserDefaults.standard.setValue(history, forKey: today)
                         settingsTime.currentTime = settingsTime.FocusTime
-                        Items.timerMode = .Focus
+                        timerMode = .Focus
                     }
                 }
             })
             
-            .onChange(of: Items.isPlaying, perform: { _ in
-                Items.isPlaying ? updateTimer() : stopTimer()
+            .onChange(of: isPlaying, perform: { _ in
+                isPlaying ? updateTimer() : stopTimer()
             })
             
             .animation(.spring(), value: showActionSheet)
@@ -107,12 +101,12 @@ struct ContentView: View {
             
             SettingsVew(settingsTime: settingsTime)
                 .tabItem({
-                    tabElement(imageName: "Settings", text: "Settings")
+                  tabElement(imageName: "Settings", text: "Settings")
                 })
             
-            historyView(today: Items.today)
+            historyView(today: today)
                 .tabItem({
-                    tabElement(imageName: "file", text: "History")
+                  tabElement(imageName: "file", text: "History")
                 })
         }
         .tint(.white)
@@ -166,27 +160,29 @@ struct focusCategory: View {
 }
 
 struct Buttons: View {
-    @EnvironmentObject var Items: PomodoroItems
+    var today: String
+    @Binding var timerMode: mode
     @ObservedObject var settingsTime: SettingsData
+    @Binding var isPlaying: Bool
     var body: some View {
         HStack(spacing: 80) {
-            playOrStop(imageName: Items.isPlaying ? "pause" : "play") {
-                Items.isPlaying.toggle()
+            playOrStop(imageName: isPlaying ? "pause" : "play") {
+                isPlaying.toggle()
             }
             playOrStop(imageName: "stop.fill") {
-                var historyToday: [String: Int] = UserDefaults.standard.object(forKey: Items.today) as? [String: Int] ?? ["Focus time": 0, "Break time": 0]
+                var historyToday: [String: Int] = UserDefaults.standard.object(forKey: today) as? [String: Int] ?? ["Focus time": 0, "Break time": 0]
                 
-                switch Items.timerMode {
+                switch timerMode {
                 case .Focus:
                     historyToday["Focus time"]! += settingsTime.FocusTime.getSeconds() - settingsTime.currentTime.getSeconds()
                     settingsTime.currentTime = settingsTime.FocusTime
-                    
+                
                 case .Break:
                     historyToday["Break time"]! += settingsTime.BreakTime.getSeconds() - settingsTime.currentTime.getSeconds()
                     settingsTime.currentTime = settingsTime.BreakTime
                 }
-                UserDefaults.standard.setValue(historyToday, forKey: Items.today)
-                Items.isPlaying = false
+                UserDefaults.standard.setValue(historyToday, forKey: today)
+                isPlaying = false
             }
         }
     }
@@ -238,7 +234,7 @@ struct tabElement: View {
 }
 
 struct Clock: View {
-    @EnvironmentObject var Items: PomodoroItems
+    @Binding var timerMode: mode
     @ObservedObject var time: SettingsData
     var body: some View {
         ZStack {
@@ -246,20 +242,20 @@ struct Clock: View {
                 .strokeBorder(Color.white.opacity(0.3), lineWidth: 6)
                 .frame(width: 248, height: 248)
             
-            Circle()
-                .trim(from: 0.0, to: CGFloat(min(calculatePercentage(bigDate: Items.timerMode == .Focus ? time.FocusTime : time.BreakTime, smallDate: time.currentTime), 1.0)))
+                Circle()
+                .trim(from: 0.0, to: CGFloat(min(calculatePercentage(bigDate: timerMode == .Focus ? time.FocusTime : time.BreakTime, smallDate: time.currentTime), 1.0)))
                 .stroke(style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
                 .foregroundColor(.white)
                 .rotationEffect(Angle(degrees: -90))
                 .frame(width: 243, height: 243)
-            
+
             
             VStack {
                 getDate(date: time)
                     .font(.system(size: 44))
                     .foregroundColor(.white)
                     .fontWeight(.bold)
-                Text(Items.timerMode == .Focus ? "Focus on your task" : "Break")
+                Text(timerMode == .Focus ? "Focus on your task" : "Break")
                     .foregroundColor(.white)
                     .fontWeight(.semibold)
             }

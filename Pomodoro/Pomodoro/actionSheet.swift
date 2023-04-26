@@ -19,25 +19,9 @@ struct actionSheet: View {
 }
 
 struct ActionSheet: View {
-    @EnvironmentObject var Items: PomodoroItems
+    @Binding var backgroundImage: backgroundMode
     @State private var selected = "Work"
     var cancelAction: () -> ()
-    
-//    var buttons: [sheetButton] = [
-//        sheetButton(text: "Work", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255)),
-//
-//          sheetButton(text: "Study", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255)),
-//
-//        sheetButton(text: "Wokout", backgroundColor: Color(red: 47/255, green: 47/255, blue: 51/255), textColor: .white),
-//
-//        sheetButton(text: "Reading", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255)),
-//
-//        sheetButton(text: "Meditation", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255)),
-//
-//
-//        sheetButton(text: "Others", backgroundColor: Color(red: 234/255, green: 234/255, blue: 234/255))
-//
-//    ]
     
     var body: some View {
        VStack {
@@ -53,22 +37,22 @@ struct ActionSheet: View {
                     VStack(spacing: 20) {
 
                         HStack(spacing: 14) {
-                            sheetButton(isSelected: $selected, text: "Work")
+                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Work")
 
-                            sheetButton(isSelected: $selected, text: "Study")
+                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Study")
                         }
 
                         HStack(spacing: 14) {
-                            sheetButton(isSelected: $selected, text: "Workout")
+                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Workout")
 
-                            sheetButton(isSelected: $selected, text: "Reading")
+                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Reading")
                         }
 
                         HStack(spacing: 14) {
-                            sheetButton(isSelected: $selected, text: "Meditation")
+                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Meditation")
 
 
-                            sheetButton(isSelected: $selected, text: "Others")
+                            sheetButton(isSelected: $selected, backgroundImage: $backgroundImage, text: "Others")
                         }
                     }
                 }
@@ -96,25 +80,23 @@ struct ActionSheet: View {
 
 struct sheetButton: View {
     @Binding var isSelected: String
-    @EnvironmentObject var Items: PomodoroItems
+    @Binding var backgroundImage: backgroundMode
     var text: String
-//    @State var backgroundColor: Color
-//    var textColor: Color = .black
 
     var body: some View {
         Button(action: {
             isSelected = text
             switch text {
-            case "Work": Items.backgroundImage = .Work
-            case "Workout": Items.backgroundImage = .Workout
-            case "Reading": Items.backgroundImage = .Reading
-            case "Meditation": Items.backgroundImage = .Meditation
-            case "Study": Items.backgroundImage = .Study
-            case "Others": Items.backgroundImage = .Others
+            case "Work": backgroundImage = .Work
+            case "Workout": backgroundImage = .Workout
+            case "Reading": backgroundImage = .Reading
+            case "Meditation": backgroundImage = .Meditation
+            case "Study": backgroundImage = .Study
+            case "Others": backgroundImage = .Others
             default:
                 break
             }
-            UserDefaults.standard.setValue(Items.backgroundImage.rawValue, forKey: "BackgroundImage")
+            UserDefaults.standard.setValue(backgroundImage.rawValue, forKey: "BackgroundImage")
         }) {
             Text(text)
                 .foregroundColor(isSelected == text ? .white : .black)
