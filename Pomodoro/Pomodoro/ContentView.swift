@@ -75,26 +75,13 @@ struct ContentView: View {
             .onChange(of: settingsTime.currentTime, perform: { _ in
                 if settingsTime.currentTime.getSeconds() < 1 {
                     var history = UserDefaults.standard.object(forKey: today) as? [String: Int] ?? ["Focus time": 0, "Break time": 0]
-//                    switch timerMode {
-//                    case .Focus:
-//                        history["Focus time"]! += settingsTime.FocusTime.getSeconds()
-//                        UserDefaults.standard.setValue(history, forKey: today)
-//                        settingsTime.currentTime = settingsTime.BreakTime
-//                        timerMode = .Break
-//                    case .Break:
-//                        history["Break time"]! += settingsTime.FocusTime.getSeconds()
-//                        UserDefaults.standard.setValue(history, forKey: today)
-//                        settingsTime.currentTime = settingsTime.FocusTime
-//                        timerMode = .Focus
-//                    }
-                    
-                    if timerMode == .Focus {
+                    switch timerMode {
+                    case .Focus:
                         history["Focus time"]! += settingsTime.FocusTime.getSeconds()
                         UserDefaults.standard.setValue(history, forKey: today)
                         settingsTime.currentTime = settingsTime.BreakTime
                         timerMode = .Break
-                    }
-                    else {
+                    case .Break:
                         history["Break time"]! += settingsTime.BreakTime.getSeconds()
                         UserDefaults.standard.setValue(history, forKey: today)
                         settingsTime.currentTime = settingsTime.FocusTime
