@@ -27,7 +27,6 @@ struct Test: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd.MM.YY"
         return formatter.string(from: date)
-        data.focusTime += date.getSeconds()
     }
 }
 

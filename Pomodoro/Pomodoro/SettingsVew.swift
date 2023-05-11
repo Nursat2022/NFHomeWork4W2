@@ -7,20 +7,35 @@
 
 import SwiftUI
 
+func defaultTime(_ mode: mode) -> Date {
+    let calendar = Calendar.current
+    var dateComponents = DateComponents()
+    switch mode {
+    case .Focus:
+        dateComponents.minute = 25
+        
+    case .Break:
+        dateComponents.minute = 5
+    }
+    
+    guard let specificDate = calendar.date(from: dateComponents) else { return Date() }
+    return specificDate
+}
+
 class SettingsData: ObservableObject {
-    @Published var FocusTime: Date = UserDefaults.standard.object(forKey: "FocusTime") as? Date ?? Date() {
+    @Published var FocusTime: Date = UserDefaults.standard.object(forKey: "FocusTime") as? Date ?? defaultTime(.Focus) {
         didSet {
             UserDefaults.standard.set(self.FocusTime, forKey: "FocusTime")
         }
     }
     
-    @Published var currentTime: Date = UserDefaults.standard.object(forKey: "FocusTime") as? Date ?? Date() {
+    @Published var currentTime: Date = UserDefaults.standard.object(forKey: "FocusTime") as? Date ?? defaultTime(.Focus) {
         didSet {
             UserDefaults.standard.set(self.FocusTime, forKey: "FocusTime")
         }
     }
     
-    @Published var BreakTime: Date = UserDefaults.standard.object(forKey: "BreakTime") as? Date ?? Date() {
+    @Published var BreakTime: Date = UserDefaults.standard.object(forKey: "BreakTime") as? Date ?? defaultTime(.Break) {
         didSet {
             UserDefaults.standard.set(self.BreakTime, forKey: "BreakTime")
         }

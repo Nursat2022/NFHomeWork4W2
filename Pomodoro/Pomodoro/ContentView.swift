@@ -206,8 +206,9 @@ extension Date {
 }
 
 extension Int {
-    func toDate() -> String {
+    mutating func toDate() -> String {
         let hours = self / 3600
+        self %= 3600
         let minutes = self / 60
         let seconds = self % 60
         return hours == 0 ? String(format: "%02d:%02d", minutes, seconds) :
