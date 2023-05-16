@@ -87,7 +87,6 @@ struct ContentView: View {
                         settingsTime.currentTime = settingsTime.FocusTime
                         timerMode = .Focus
                     }
-                    
                 }
             })
             
